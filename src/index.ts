@@ -4,7 +4,7 @@ import {cors} from 'hono/cors';
 import {logger} from 'hono/logger';
 import { loginUser, registerUser } from './controller/auth';
 import {jwt} from 'hono/jwt'
-import { createTask } from './controller/task';
+import { createTask, getTask } from './controller/task';
 const app = new Hono()
 const db = initDatabase();
 
@@ -39,5 +39,5 @@ app.post('/register-user',(c)=>registerUser(c,db));
 app.post('/login-user',(c)=>loginUser(c,db));
 
 app.post('/task',auth,(c)=> createTask(c,db));
-
+app.get('/task',auth,(c)=>getTask(c,db));
 export default app

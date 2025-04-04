@@ -49,3 +49,13 @@ export async function createTask(c : Context,db : Database){
         
     }
 }
+
+export async function getTask(c: Context, db :Database){
+    try {
+        const extractALLtask = db.query("SELECT * FROM tasks").all() as Task[];
+        return c.json(extractALLtask,200);
+
+    } catch (error) {
+        return c.json({error : "Internal Server Eroor"},500)
+    }
+}
