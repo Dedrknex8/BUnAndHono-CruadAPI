@@ -19,7 +19,7 @@ export function initDatabase(): Database{
             user_id INTEGER NOT NULL,
             title TEXT NOT NULL,
             description TEXT,
-            crated_at DATETIME DEAFULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEAFULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
             )
             

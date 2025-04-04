@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import {initDatabase} from './databse/db'
 import {cors} from 'hono/cors';
 import {logger} from 'hono/logger';
-import { registerUser } from './controller/auth';
+import { loginUser, registerUser } from './controller/auth';
 
 const app = new Hono()
 const db = initDatabase();
@@ -28,5 +28,5 @@ app.get('/db-test',(c)=>{
 
 
 app.post('/register-user',(c)=>registerUser(c,db));
-
+app.post('/login-user',(c)=>loginUser(c,db));
 export default app
