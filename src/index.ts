@@ -1,9 +1,10 @@
-import { Hono } from 'hono'
+import { Hono, Next,Context } from 'hono'
 import {initDatabase} from './databse/db'
 import {cors} from 'hono/cors';
 import {logger} from 'hono/logger';
 import { loginUser, registerUser } from './controller/auth';
-
+import {jwt} from 'hono/jwt'
+import { createTask } from './controller/task';
 const app = new Hono()
 const db = initDatabase();
 
@@ -11,6 +12,13 @@ const db = initDatabase();
 //middleware
 app.use('*',cors());
 app.use('*',logger());
+
+//auth middleware
+
+const auth = jwt({
+  secret : process.env.JWT_SECRET_KEY || 'JWT_SECRET_KEY'
+});
+
 app.get('/', (c) => {
   return c.text('Hello Word!')
 });
@@ -29,4 +37,7 @@ app.get('/db-test',(c)=>{
 
 app.post('/register-user',(c)=>registerUser(c,db));
 app.post('/login-user',(c)=>loginUser(c,db));
+
+app.post('/task',auth,(c)=> createTask(c,db));
+
 export default app

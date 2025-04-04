@@ -84,8 +84,8 @@ export async function loginUser(c:Context,db:Database){
         //Implement token using JWT Token sign method
 
         const token = await sign({
-            userId : user.id , role : user.role , password : user.password
-        },process.env.JWT_SECRET_KEY || 'JWT_SECRET');
+            userId : user.id , role : user.role
+        },process.env.JWT_SECRET_KEY || 'JWT_SECRET_KEY');
 
         return c.json({token})        
     } catch (error) {
