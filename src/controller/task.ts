@@ -52,10 +52,35 @@ export async function createTask(c : Context,db : Database){
 
 export async function getTask(c: Context, db :Database){
     try {
-        const extractALLtask = db.query("SELECT * FROM tasks").all() as Task[];
+        const extractALLtask = db.query("SELECT * FROM tasks").all() as Tasks[];
         return c.json(extractALLtask,200);
 
     } catch (error) {
         return c.json({error : "Internal Server Eroor"},500)
+    }
+}
+
+export async function getSingleTask(c:Context,db:Database){
+    //get the taskid
+    const taskId = c.req.param('id');
+    try {
+        //extract the task from db
+
+        const extractTask = db.query("SELECT * FROM tasks WHERE id =?").get(taskId) as Tasks | undefined;
+
+        if(!extractTask){
+            return c.json({error : "Can't fetch task with this id! Try again later"});
+        }
+
+        return c.json({
+            messsage : 'task fetched sucessfully',
+            data : extractTask
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        return c.json({error : "Internal Server error"});
+        
     }
 }
