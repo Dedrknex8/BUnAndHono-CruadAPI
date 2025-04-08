@@ -84,3 +84,42 @@ export async function getSingleTask(c:Context,db:Database){
         
     }
 }
+
+export async function updateTask(c:Context,db:Database){
+    const userId = c.get('jwtPayload').userId;
+    const userRole = c.get('jwtPayload').role;
+    const taskId = c.req.param('id');
+
+    const {title,description,user_id} = await c.req.json();
+
+    if(!userId){
+        return c.json({
+            error : "Access not Granted"
+        },401)
+    }
+
+
+    if(userRole!=="admin"){
+        return c.json({error  : "UnAuthorized access !"});
+    }
+    if(userId !== user_id){
+        return c.json({
+            error  : "Invalid user with diff user id"
+        },403);
+    }
+
+    try {
+        const extractExistingTask = db.query("SELECT * FROM tasks WHERE id=?").get(taskId) as Tasks | undefined;
+
+        const extractUser = await db.query(`UPDATE tasks SET title = ?,description =?,user_Id =? WHERE id=?`).get(title || extractExistingTask?.title,description !== undefined ? description :  extractExistingTask?.description,userId || extractExistingTask?.user_id,taskId) as Tasks;
+
+        return c.json(updateTask,200)
+
+
+
+    } catch (error) {
+        console.log(error);
+        
+        return c.json({error : "Internal Server error"},500);
+    }
+}
