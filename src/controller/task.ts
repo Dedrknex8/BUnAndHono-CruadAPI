@@ -123,3 +123,42 @@ export async function updateTask(c:Context,db:Database){
         return c.json({error : "Internal Server error"},500);
     }
 }
+
+export async function deleteTask(c:Context,db:Database){
+    const userId = c.get('jwtPayload').userId;
+    const userRole = c.get('jwtPayload').role;
+    const taskId = c.req.param('id');
+
+    const {user_id} = await c.req.json(); 
+
+    if(!userId){
+        return c.json({
+            error : "Access not Granted"
+        },401)
+    }
+
+
+    if(userRole!=="admin"){
+        return c.json({error  : "UnAuthorized access ! Only admin's can delete/update"});
+    }
+    if(userId !== user_id){
+        return c.json({
+            error  : "Invalid user"
+        },403);
+    }
+    try {
+        const deleteTask =  db.query("DELETE FROM tasks WHERE id =?").run(taskId);
+
+        if(deleteTask.changes ===0){
+            return c.json({error : "Cann't delete task something went wrong"},401);
+        }
+
+        return c.json({message : "task deleted sucessfully"},200);
+
+
+    } catch (error) {
+        console.log("error is ",error);
+        return c.json({error : "Internal Server Error"},500);
+    }
+
+}

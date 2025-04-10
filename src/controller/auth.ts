@@ -87,7 +87,7 @@ export async function loginUser(c:Context,db:Database){
             userId : user.id , role : user.role
         },process.env.JWT_SECRET_KEY || 'JWT_SECRET_KEY');
 
-        return c.json({token})        
+        return c.json({token,user})        
     } catch (error) {
         console.log(error);
         
