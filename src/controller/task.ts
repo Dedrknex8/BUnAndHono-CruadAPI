@@ -42,7 +42,6 @@ export async function createTask(c : Context,db : Database){
             },201);
 
     } catch (error) {
-        console.log(error);
         return c.json({
             error : "Internal Server Error"
         })
@@ -100,7 +99,7 @@ export async function updateTask(c:Context,db:Database){
 
 
     if(userRole!=="admin"){
-        return c.json({error  : "UnAuthorized access !"});
+        return c.json({error  : "UnAuthorized access !"},403);
     }
     if(userId !== user_id){
         return c.json({
@@ -150,15 +149,18 @@ export async function deleteTask(c:Context,db:Database){
         const deleteTask =  db.query("DELETE FROM tasks WHERE id =?").run(taskId);
 
         if(deleteTask.changes ===0){
-            return c.json({error : "Cann't delete task something went wrong"},401);
+            return c.json(
+            {
+                error : "Cann't delete task something went wrong"
+            },
+            401
+        );
         }
 
         return c.json({message : "task deleted sucessfully"},200);
 
 
     } catch (error) {
-        console.log("error is ",error);
         return c.json({error : "Internal Server Error"},500);
     }
-
 }

@@ -89,7 +89,7 @@ export async function loginUser(c:Context,db:Database){
 
         return c.json({token,user})        
     } catch (error) {
-        console.log(error);
+        console.log(error); //remove this after fix and addded logger file instead
         
         c.json({error : "Internal Server Error "},500);
     }
